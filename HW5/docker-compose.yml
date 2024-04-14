@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+
+  nginx-l4:
+    build:
+      context: ./
+      dockerfile: nginx.Dockerfile
+    image: nginx-l4:1.18.0
+    container_name: nginx-l4
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-l4.conf:/etc/nginx/sites-available/nginx-l4.conf
+    depends_on:
+      - dockerl4
+
+  dockerl4:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: dockerl4:1.0
+    container_name: dockerl4
+    ports:
+      - 5000:8080
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '1'

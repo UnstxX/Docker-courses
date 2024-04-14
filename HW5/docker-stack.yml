@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  nginx-l4:
+    image: nginx-l4:1.18.0
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    ports:
+      - "80:80"
+    depends_on:
+      - dockerl4
+    configs:
+      - source: nginx-l4.conf
+        target: /etc/nginx/sites-available/nginx-l4.conf
+
+  dockerl4:
+    image: dockerl4:1.0
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+
+configs:
+  nginx-l4.conf:
+    file: nginx-l4.conf
